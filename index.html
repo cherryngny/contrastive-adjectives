@@ -45,6 +45,7 @@
       align-items: center;
       font-size: 1.2rem;
       font-weight: bold;
+      z-index: 20;
     }
     .btn-header {
       background: #FF9F43;
@@ -152,7 +153,7 @@
       display: flex;
       gap: 15px;
       align-items: center;
-      z-index: 10;
+      z-index: 20;
     }
     .trial-counter {
       background: #FF9F43;
@@ -169,6 +170,7 @@
       justify-content: space-around;
       align-items: center;
       position: relative;
+      z-index: 2;
     }
     .target-box {
       width: 44%;
@@ -210,7 +212,7 @@
       background: #EDF2F7;
       border-radius: 16px;
       padding: 10px;
-      z-index: 10;
+      z-index: 20;
     }
     .draggable-item {
       width: 95px;
@@ -225,7 +227,7 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       touch-action: none;
       position: relative;
-      z-index: 10;
+      z-index: 25;
     }
     .draggable-item:active {
       cursor: grabbing;
@@ -244,7 +246,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 5;
+      z-index: 10;
       touch-action: none;
       pointer-events: none;
       display: none;
@@ -261,7 +263,7 @@
       cursor: pointer;
       font-weight: bold;
       box-shadow: 0 6px 15px rgba(49, 130, 206, 0.4);
-      z-index: 20;
+      z-index: 30;
       transition: transform 0.1s;
     }
     .draw-next-btn:active {
