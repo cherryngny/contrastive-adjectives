@@ -149,6 +149,16 @@
       color: #D35400;
       font-weight: bold;
       text-align: center;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .trial-counter {
+      background: #FF9F43;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 1rem;
     }
 
     .drop-targets-container {
@@ -234,6 +244,8 @@
       height: 100%;
       z-index: 5;
       touch-action: none;
+      pointer-events: none;
+      display: none;
     }
 
     /* MODAL POPUP */
@@ -255,13 +267,13 @@
     }
     .modal-content {
       background: white;
-      padding: 30px;
+      padding: 35px;
       border-radius: 24px;
       text-align: center;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
     .modal-content h2 {
-      font-size: 2rem;
+      font-size: 2.2rem;
       color: #2ECC71;
       margin-bottom: 15px;
     }
@@ -277,16 +289,16 @@
 
   <!-- SELECTION MENU -->
   <div id="menu-screen">
-    <h1>請選擇練習的形容詞對 (可多選)</h1>
-    <p>選好後點擊「開始遊戲」即可開始訓練！</p>
+    <h1>請選擇練習的形容詞對 (單選)</h1>
+    <p>選好後點擊「開始遊戲」即可進行 5 次練習！</p>
     <div class="pair-grid">
-      <button class="pair-btn" data-pair="凍熱" onclick="togglePair(this)">凍 / 熱</button>
-      <button class="pair-btn" data-pair="多少" onclick="togglePair(this)">多 / 少</button>
-      <button class="pair-btn" data-pair="長短" onclick="togglePair(this)">長 / 短</button>
-      <button class="pair-btn" data-pair="高矮" onclick="togglePair(this)">高 / 矮</button>
-      <button class="pair-btn" data-pair="肥瘦" onclick="togglePair(this)">肥 / 瘦</button>
-      <button class="pair-btn" data-pair="遠近" onclick="togglePair(this)">遠 / 近</button>
-      <button class="pair-btn" data-pair="厚薄" onclick="togglePair(this)">厚 / 薄</button>
+      <button class="pair-btn" data-pair="凍熱" onclick="selectSinglePair(this)">凍 / 熱</button>
+      <button class="pair-btn" data-pair="多少" onclick="selectSinglePair(this)">多 / 少</button>
+      <button class="pair-btn" data-pair="長短" onclick="selectSinglePair(this)">長 / 短</button>
+      <button class="pair-btn" data-pair="高矮" onclick="selectSinglePair(this)">高 / 矮</button>
+      <button class="pair-btn" data-pair="肥瘦" onclick="selectSinglePair(this)">肥 / 瘦</button>
+      <button class="pair-btn" data-pair="遠近" onclick="selectSinglePair(this)">遠 / 近</button>
+      <button class="pair-btn" data-pair="厚薄" onclick="selectSinglePair(this)">厚 / 薄</button>
     </div>
     <button class="start-btn" id="start-btn" disabled onclick="startGame()">開始遊戲</button>
   </div>
@@ -294,6 +306,7 @@
   <!-- PLAY SCREEN -->
   <div id="play-screen" style="display: none;">
     <div class="instruction-banner">
+      <span class="trial-counter" id="trial-counter">1 / 5</span>
       <span id="instruction-text">配對正確的物件吧！</span>
     </div>
 
@@ -311,16 +324,16 @@
   <!-- SUCCESS POPUP -->
   <div class="modal" id="success-modal">
     <div class="modal-content">
-      <h2>答對了！好棒喔！</h2>
-      <button class="start-btn" onclick="nextQuestion()">下一題</button>
+      <h2 id="modal-title">🎉 完成了！你太棒了！</h2>
+      <button class="start-btn" id="modal-btn" onclick="nextQuestion()">下一題</button>
     </div>
   </div>
 </div>
 
 <script>
-  let selectedPairs = [];
-  let currentPairQueue = [];
-  let currentTrial = null;
+  let selectedTarget = null;
+  let currentTrialCount = 0;
+  const maxTrials = 5;
   let solvedCount = 0;
 
   // 10 ITEMS FOR COLD/HOT (5 COLD: 7.png-11.png, 5 HOT: 12.png-16.png)
@@ -357,7 +370,7 @@
     { imgSrc: '28.png', key: 'small_burger' }
   ];
 
-  // EXEMPLAR DATA POOL FOR 長短, 高矮, 肥瘦 (CONTAINER + ITEM PAIRS)
+  // EXEMPLAR DATA POOL FOR 長短, 高矮, 肥瘦
   const exemplarPool = {
     '長短': [
       { name: '直尺', targetLongImg: '33.png', targetShortImg: '34.png', longImg: '35.png', shortImg: '36.png', longKey: 'long_ruler', shortKey: 'short_ruler' },
@@ -394,9 +407,9 @@
       'thick_book': `<svg viewBox="0 0 100 100"><rect x="30" y="20" width="40" height="60" rx="4" fill="#3182CE"/></svg>`,
       'thin_book': `<svg viewBox="0 0 100 100"><rect x="42" y="20" width="16" height="60" rx="2" fill="#E53E3E"/></svg>`,
 
-      'house': `<svg viewBox="0 0 100 100"><polygon points="50,15 15,45 85,45" fill="#E53E3E"/><rect x="25" y="45" width="50" height="40" fill="#FEFCBF"/></svg>`,
-      'far_person': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#3182CE"/></svg>`,
-      'near_person': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="28" fill="#3182CE"/></svg>`
+      'near_house': `<svg viewBox="0 0 100 100"><polygon points="50,15 15,45 85,45" fill="#4299E1"/><rect x="25" y="45" width="50" height="40" fill="#EBF8FF"/></svg>`,
+      'far_house': `<svg viewBox="0 0 100 100"><polygon points="50,15 15,45 85,45" fill="#E53E3E"/><rect x="25" y="45" width="50" height="40" fill="#FEFCBF"/></svg>`,
+      'person': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="25" fill="#3182CE"/></svg>`
     };
 
     if (svgs[key]) return svgs[key];
@@ -415,17 +428,12 @@
     return img;
   }
 
-  // UI CONTROL
-  function togglePair(btn) {
-    const pair = btn.getAttribute('data-pair');
-    if (selectedPairs.includes(pair)) {
-      selectedPairs = selectedPairs.filter(p => p !== pair);
-      btn.classList.remove('selected');
-    } else {
-      selectedPairs.push(pair);
-      btn.classList.add('selected');
-    }
-    document.getElementById('start-btn').disabled = selectedPairs.length === 0;
+  // SINGLE SELECT TOGGLE
+  function selectSinglePair(btn) {
+    document.querySelectorAll('.pair-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedTarget = btn.getAttribute('data-pair');
+    document.getElementById('start-btn').disabled = false;
   }
 
   function showMenu() {
@@ -434,9 +442,9 @@
   }
 
   function startGame() {
+    currentTrialCount = 0;
     document.getElementById('menu-screen').style.display = 'none';
     document.getElementById('play-screen').style.display = 'flex';
-    currentPairQueue = [...selectedPairs].sort(() => Math.random() - 0.5);
     nextQuestion();
   }
 
@@ -445,11 +453,14 @@
     document.getElementById('success-modal').classList.remove('show');
     clearCanvas();
 
-    if (currentPairQueue.length === 0) {
-      currentPairQueue = [...selectedPairs].sort(() => Math.random() - 0.5);
+    currentTrialCount++;
+    if (currentTrialCount > maxTrials) {
+      showMenu();
+      return;
     }
-    const currentPair = currentPairQueue.shift();
-    
+
+    document.getElementById('trial-counter').innerText = `${currentTrialCount} / ${maxTrials}`;
+
     const targetsContainer = document.getElementById('targets-container');
     const sourceArea = document.getElementById('source-area');
     targetsContainer.innerHTML = '';
@@ -457,9 +468,9 @@
 
     const isSwapped = Math.random() > 0.5;
 
-    if (currentPair === '凍熱') {
-      const coldCharIdx = Math.floor(Math.random() * 3) + 1; // 1.png - 3.png
-      const hotCharIdx = Math.floor(Math.random() * 3) + 4;  // 4.png - 6.png
+    if (selectedTarget === '凍熱') {
+      const coldCharIdx = Math.floor(Math.random() * 3) + 1;
+      const hotCharIdx = Math.floor(Math.random() * 3) + 4;
 
       const selectedColdItem = coldItemPool[Math.floor(Math.random() * coldItemPool.length)];
       const selectedHotItem = hotItemPool[Math.floor(Math.random() * hotItemPool.length)];
@@ -475,7 +486,7 @@
         isSwapped
       });
     } 
-    else if (currentPair === '多少') {
+    else if (selectedTarget === '多少') {
       const selectedLargeFood = largeFoodPool[Math.floor(Math.random() * largeFoodPool.length)];
       const selectedSmallFood = smallFoodPool[Math.floor(Math.random() * smallFoodPool.length)];
 
@@ -490,7 +501,7 @@
         isSwapped
       });
     } 
-    else if (currentPair === '厚薄') {
+    else if (selectedTarget === '厚薄') {
       setupDragMatching({
         instruction: '大嘴怪吃厚書，小嘴怪吃薄書！',
         targetA: { id: 'big_mouth', imgSrc: '29.png', key: 'big_mouth_monster', accepts: 'thick_book' },
@@ -502,7 +513,7 @@
         isSwapped
       });
     } 
-    else if (currentPair === '長短') {
+    else if (selectedTarget === '長短') {
       const itemData = exemplarPool['長短'][Math.floor(Math.random() * exemplarPool['長短'].length)];
       setupDragMatching({
         instruction: `將「長」同「短」放對位置！`,
@@ -515,7 +526,7 @@
         isSwapped
       });
     } 
-    else if (currentPair === '高矮') {
+    else if (selectedTarget === '高矮') {
       const itemData = exemplarPool['高矮'][Math.floor(Math.random() * exemplarPool['高矮'].length)];
       setupDragMatching({
         instruction: `將「高」同「矮」放對位置！`,
@@ -528,7 +539,7 @@
         isSwapped
       });
     } 
-    else if (currentPair === '肥瘦') {
+    else if (selectedTarget === '肥瘦') {
       const itemData = exemplarPool['肥瘦'][Math.floor(Math.random() * exemplarPool['肥瘦'].length)];
       setupDragMatching({
         instruction: `將「肥」同「瘦」放對位置！`,
@@ -541,16 +552,19 @@
         isSwapped
       });
     } 
-    else if (currentPair === '遠近') {
+    else if (selectedTarget === '遠近') {
       setupRouteDrawingTrial();
     }
   }
 
   // DRAG AND DROP ENGINE
   function setupDragMatching(config) {
-    currentTrial = config;
     solvedCount = 0;
     document.getElementById('instruction-text').innerText = config.instruction;
+
+    const canvas = document.getElementById('draw-canvas');
+    canvas.style.display = 'none';
+    canvas.style.pointerEvents = 'none';
 
     const targetsContainer = document.getElementById('targets-container');
     const sourceArea = document.getElementById('source-area');
@@ -654,9 +668,7 @@
             solvedCount++;
 
             if (solvedCount >= 2) {
-              setTimeout(() => {
-                document.getElementById('success-modal').classList.add('show');
-              }, 400);
+              setTimeout(triggerCompletion, 400);
             }
           }
         }
@@ -675,20 +687,23 @@
   // 遠近 ROUTE DRAWING
   function setupRouteDrawingTrial() {
     const instruction = '畫一條路線回家！體會「遠」同「近」！';
-    currentTrial = { instruction };
     document.getElementById('instruction-text').innerText = instruction;
+
+    const canvas = document.getElementById('draw-canvas');
+    canvas.style.display = 'block';
+    canvas.style.pointerEvents = 'auto';
 
     const targetsContainer = document.getElementById('targets-container');
     targetsContainer.innerHTML = `
       <div style="display:flex; justify-content:space-between; width:100%; height:100%; align-items:center; padding: 20px;">
-        <div id="person-near" style="text-align:center;">
-          ${createImageElement('70.png', 'near_person').outerHTML}
+        <div id="near-house" style="text-align:center;">
+          ${createImageElement('69.png', 'near_house').outerHTML}
         </div>
-        <div id="house-target" style="text-align:center;">
-          ${createImageElement('69.png', 'house').outerHTML}
+        <div id="person-center" style="text-align:center;">
+          ${createImageElement('70.png', 'person').outerHTML}
         </div>
-        <div id="person-far" style="text-align:center;">
-          ${createImageElement('71.png', 'far_person').outerHTML}
+        <div id="far-house" style="text-align:center;">
+          ${createImageElement('71.png', 'far_house').outerHTML}
         </div>
       </div>
     `;
@@ -728,9 +743,7 @@
     const endDraw = () => {
       if (drawing) {
         drawing = false;
-        setTimeout(() => {
-          document.getElementById('success-modal').classList.add('show');
-        }, 500);
+        setTimeout(triggerCompletion, 500);
       }
     };
 
@@ -747,6 +760,19 @@
     const canvas = document.getElementById('draw-canvas');
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // TRIGGER CELEBRATORY COMPLETION POPUP
+  function triggerCompletion() {
+    const modalBtn = document.getElementById('modal-btn');
+    if (currentTrialCount >= maxTrials) {
+      document.getElementById('modal-title').innerText = "🎉 完成了！你太棒了！";
+      modalBtn.innerText = "返回主選單";
+    } else {
+      document.getElementById('modal-title').innerText = "🎉 完成了！你太棒了！";
+      modalBtn.innerText = "下一題 ➔";
+    }
+    document.getElementById('success-modal').classList.add('show');
   }
 </script>
 </body>
