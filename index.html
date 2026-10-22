@@ -94,16 +94,15 @@
       background: #F8F9FA;
       border: 3px solid #E9ECEF;
       border-radius: 16px;
-      padding: 15px 10px;
-      font-size: 1.2rem;
+      padding: 18px 10px;
+      font-size: 1.3rem;
       font-weight: bold;
       color: #2C3E50;
       cursor: pointer;
       transition: all 0.2s;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
     }
     .pair-btn.selected {
       border-color: #2ECC71;
@@ -162,7 +161,7 @@
     }
     .target-box {
       width: 44%;
-      height: 90%;
+      height: 92%;
       border: 4px dashed #CBD5E0;
       border-radius: 20px;
       display: flex;
@@ -178,8 +177,8 @@
       border-color: #3182CE;
     }
     .target-img-container {
-      width: 85%;
-      height: 75%;
+      width: 90%;
+      height: 90%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -188,12 +187,6 @@
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
-    }
-    .target-label {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #4A5568;
-      margin-top: 6px;
     }
 
     .draggable-source-area {
@@ -279,7 +272,7 @@
 <div id="game-card">
   <header>
     <span>形容詞反義詞學習遊戲</span>
-    <button class="btn-header" onclick="showMenu()">⚙️ 選擇目標</button>
+    <button class="btn-header" onclick="showMenu()">選擇目標</button>
   </header>
 
   <!-- SELECTION MENU -->
@@ -287,15 +280,15 @@
     <h1>請選擇練習的形容詞對 (可多選)</h1>
     <p>選好後點擊「開始遊戲」即可開始訓練！</p>
     <div class="pair-grid">
-      <button class="pair-btn" data-pair="凍熱" onclick="togglePair(this)">🔥/🧊 凍 / 熱</button>
-      <button class="pair-btn" data-pair="多少" onclick="togglePair(this)">🥣/🍲 多 / 少</button>
-      <button class="pair-btn" data-pair="長短" onclick="togglePair(this)">📏 長 / 短</button>
-      <button class="pair-btn" data-pair="高矮" onclick="togglePair(this)">🦒/🐕 高 / 矮</button>
-      <button class="pair-btn" data-pair="肥瘦" onclick="togglePair(this)">🐘/🐆 肥 / 瘦</button>
-      <button class="pair-btn" data-pair="遠近" onclick="togglePair(this)">🏠 遠 / 近</button>
-      <button class="pair-btn" data-pair="厚薄" onclick="togglePair(this)">📚 厚 / 薄</button>
+      <button class="pair-btn" data-pair="凍熱" onclick="togglePair(this)">凍 / 熱</button>
+      <button class="pair-btn" data-pair="多少" onclick="togglePair(this)">多 / 少</button>
+      <button class="pair-btn" data-pair="長短" onclick="togglePair(this)">長 / 短</button>
+      <button class="pair-btn" data-pair="高矮" onclick="togglePair(this)">高 / 矮</button>
+      <button class="pair-btn" data-pair="肥瘦" onclick="togglePair(this)">肥 / 瘦</button>
+      <button class="pair-btn" data-pair="遠近" onclick="togglePair(this)">遠 / 近</button>
+      <button class="pair-btn" data-pair="厚薄" onclick="togglePair(this)">厚 / 薄</button>
     </div>
-    <button class="start-btn" id="start-btn" disabled onclick="startGame()">🚀 開始遊戲</button>
+    <button class="start-btn" id="start-btn" disabled onclick="startGame()">開始遊戲</button>
   </div>
 
   <!-- PLAY SCREEN -->
@@ -318,8 +311,8 @@
   <!-- SUCCESS POPUP -->
   <div class="modal" id="success-modal">
     <div class="modal-content">
-      <h2>🎉 答對了！好棒喔！</h2>
-      <button class="start-btn" onclick="nextQuestion()">下一題 ➔</button>
+      <h2>答對了！好棒喔！</h2>
+      <button class="start-btn" onclick="nextQuestion()">下一題</button>
     </div>
   </div>
 </div>
@@ -332,96 +325,91 @@
 
   // 10 ITEMS FOR COLD/HOT (5 COLD: 7.png-11.png, 5 HOT: 12.png-16.png)
   const coldItemPool = [
-    { imgSrc: '7.png', label: '厚外套', key: 'jacket' },
-    { imgSrc: '8.png', label: '圍巾', key: 'scarf' },
-    { imgSrc: '9.png', label: '手套', key: 'gloves' },
-    { imgSrc: '10.png', label: '毛線帽', key: 'beanie' },
-    { imgSrc: '11.png', label: '耳罩', key: 'earmuffs' }
+    { imgSrc: '7.png', key: 'jacket' },
+    { imgSrc: '8.png', key: 'scarf' },
+    { imgSrc: '9.png', key: 'gloves' },
+    { imgSrc: '10.png', key: 'beanie' },
+    { imgSrc: '11.png', key: 'earmuffs' }
   ];
 
   const hotItemPool = [
-    { imgSrc: '12.png', label: '風扇', key: 'fan' },
-    { imgSrc: '13.png', label: '雪條', key: 'ice_stick' },
-    { imgSrc: '14.png', label: '凍飲', key: 'cold_drink' },
-    { imgSrc: '15.png', label: '毛巾', key: 'towel' },
-    { imgSrc: '16.png', label: '冷氣機', key: 'air_con' }
+    { imgSrc: '12.png', key: 'fan' },
+    { imgSrc: '13.png', key: 'ice_stick' },
+    { imgSrc: '14.png', key: 'cold_drink' },
+    { imgSrc: '15.png', key: 'towel' },
+    { imgSrc: '16.png', key: 'air_con' }
   ];
 
   // 10 ITEMS FOR 多少 (5 LARGE: 19.png-23.png, 5 SMALL: 24.png-28.png)
   const largeFoodPool = [
-    { imgSrc: '19.png', label: '多的披薩', key: 'large_pizza' },
-    { imgSrc: '20.png', label: '多的面條', key: 'large_noodles' },
-    { imgSrc: '21.png', label: '多的水果', key: 'large_fruit' },
-    { imgSrc: '22.png', label: '多的壽司', key: 'large_sushi' },
-    { imgSrc: '23.png', label: '多的漢堡', key: 'large_burger' }
+    { imgSrc: '19.png', key: 'large_pizza' },
+    { imgSrc: '20.png', key: 'large_noodles' },
+    { imgSrc: '21.png', key: 'large_fruit' },
+    { imgSrc: '22.png', key: 'large_sushi' },
+    { imgSrc: '23.png', key: 'large_burger' }
   ];
 
   const smallFoodPool = [
-    { imgSrc: '24.png', label: '少的披薩', key: 'small_pizza' },
-    { imgSrc: '25.png', label: '少的面條', key: 'small_noodles' },
-    { imgSrc: '26.png', label: '少的水果', key: 'small_fruit' },
-    { imgSrc: '27.png', label: '少的壽司', key: 'small_sushi' },
-    { imgSrc: '28.png', label: '少的漢堡', key: 'small_burger' }
+    { imgSrc: '24.png', key: 'small_pizza' },
+    { imgSrc: '25.png', key: 'small_noodles' },
+    { imgSrc: '26.png', key: 'small_fruit' },
+    { imgSrc: '27.png', key: 'small_sushi' },
+    { imgSrc: '28.png', key: 'small_burger' }
   ];
 
-  // EXEMPLAR DATA POOL FOR 長短, 高矮, 肥瘦
+  // EXEMPLAR DATA POOL FOR 長短, 高矮, 肥瘦 (CONTAINER + ITEM PAIRS)
   const exemplarPool = {
     '長短': [
-      { name: '直尺', longImg: '33.png', shortImg: '34.png', longKey: 'long_ruler', shortKey: 'short_ruler' },
-      { name: '鉛筆', longImg: '35.png', shortImg: '36.png', longKey: 'long_pencil', shortKey: 'short_pencil' },
-      { name: '蛇', longImg: '37.png', shortImg: '38.png', longKey: 'long_snake', shortKey: 'short_snake' },
-      { name: '火車', longImg: '39.png', shortImg: '40.png', longKey: 'long_train', shortKey: 'short_train' },
-      { name: '繩子', longImg: '41.png', shortImg: '42.png', longKey: 'long_rope', shortKey: 'short_rope' },
-      { name: '頭髮', longImg: '43.png', shortImg: '44.png', longKey: 'long_hair', shortKey: 'short_hair' }
+      { name: '直尺', targetLongImg: '33.png', targetShortImg: '34.png', longImg: '35.png', shortImg: '36.png', longKey: 'long_ruler', shortKey: 'short_ruler' },
+      { name: '鉛筆', targetLongImg: '37.png', targetShortImg: '38.png', longImg: '39.png', shortImg: '40.png', longKey: 'long_pencil', shortKey: 'short_pencil' },
+      { name: '蛇', targetLongImg: '41.png', targetShortImg: '42.png', longImg: '43.png', shortImg: '44.png', longKey: 'long_snake', shortKey: 'short_snake' }
     ],
     '高矮': [
-      { name: '長頸鹿/小狗', tallImg: '45.png', shortImg: '46.png', tallKey: 'tall_giraffe', shortKey: 'short_dog' },
-      { name: '大樹/小草', tallImg: '47.png', shortImg: '48.png', tallKey: 'tall_tree', shortKey: 'short_grass' },
-      { name: '高樓/平房', tallImg: '49.png', shortImg: '50.png', tallKey: 'tall_building', shortKey: 'short_house' },
-      { name: '梯子/凳子', tallImg: '51.png', shortImg: '52.png', tallKey: 'tall_ladder', shortKey: 'short_stool' }
+      { name: '動物', targetTallImg: '45.png', targetShortImg: '46.png', tallImg: '47.png', shortImg: '48.png', tallKey: 'tall_giraffe', shortKey: 'short_dog' },
+      { name: '植物', targetTallImg: '49.png', targetShortImg: '50.png', tallImg: '51.png', shortImg: '52.png', tallKey: 'tall_tree', shortKey: 'short_grass' },
+      { name: '建築物', targetTallImg: '53.png', targetShortImg: '54.png', tallImg: '55.png', shortImg: '56.png', tallKey: 'tall_building', shortKey: 'short_house' }
     ],
     '肥瘦': [
-      { name: '大象/獵豹', fatImg: '53.png', thinImg: '54.png', fatKey: 'fat_elephant', thinKey: 'thin_cheetah' },
-      { name: '胖熊/瘦貓', fatImg: '55.png', thinImg: '56.png', fatKey: 'fat_bear', thinKey: 'thin_cat' },
-      { name: '相撲手/跑步員', fatImg: '57.png', thinImg: '58.png', fatKey: 'fat_sumo', thinKey: 'thin_runner' },
-      { name: '胖豬/瘦公雞', fatImg: '59.png', thinImg: '60.png', fatKey: 'fat_pig', thinKey: 'thin_rooster' }
+      { name: '動物1', targetFatImg: '57.png', targetThinImg: '58.png', fatImg: '59.png', thinImg: '60.png', fatKey: 'fat_elephant', thinKey: 'thin_cheetah' },
+      { name: '動物2', targetFatImg: '61.png', targetThinImg: '62.png', fatImg: '63.png', thinImg: '64.png', fatKey: 'fat_bear', thinKey: 'thin_cat' },
+      { name: '人物', targetFatImg: '65.png', targetThinImg: '66.png', fatImg: '67.png', thinImg: '68.png', fatKey: 'fat_sumo', thinKey: 'thin_runner' }
     ]
   };
 
   // SVG FALLBACK GRAPHICS
-  function getFallbackSVG(key, label = '') {
+  function getFallbackSVG(key) {
     const svgs = {
-      'cold_person': `<svg viewBox="0 0 100 100"><circle cx="50" cy="40" r="25" fill="#A0AEC0"/><path d="M 35 40 Q 50 30 65 40" stroke="#2B6CB0" stroke-width="4" fill="none"/><text x="50" y="85" font-size="14" text-anchor="middle" fill="#2B6CB0">🥶 凍人</text></svg>`,
-      'hot_person': `<svg viewBox="0 0 100 100"><circle cx="50" cy="40" r="25" fill="#ED8936"/><text x="50" y="85" font-size="14" text-anchor="middle" fill="#C53030">🥵 熱人</text></svg>`,
-      'cold_item': `<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="10" fill="#63B3ED"/><text x="50" y="55" font-size="28" text-anchor="middle">🧥</text><text x="50" y="90" font-size="10" text-anchor="middle">${label}</text></svg>`,
-      'hot_item': `<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="10" fill="#F6AD55"/><text x="50" y="55" font-size="28" text-anchor="middle">🌬️</text><text x="50" y="90" font-size="10" text-anchor="middle">${label}</text></svg>`,
+      'cold_person': `<svg viewBox="0 0 100 100"><circle cx="50" cy="40" r="25" fill="#A0AEC0"/><path d="M 35 40 Q 50 30 65 40" stroke="#2B6CB0" stroke-width="4" fill="none"/></svg>`,
+      'hot_person': `<svg viewBox="0 0 100 100"><circle cx="50" cy="40" r="25" fill="#ED8936"/></svg>`,
+      'cold_item': `<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="10" fill="#63B3ED"/></svg>`,
+      'hot_item': `<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="10" fill="#F6AD55"/></svg>`,
 
-      'fat_monster': `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="40" ry="35" fill="#9F7AEA"/><text x="50" y="95" font-size="12" text-anchor="middle">大胃怪 (多)</text></svg>`,
-      'thin_monster': `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="20" ry="35" fill="#ED64A6"/><text x="50" y="95" font-size="12" text-anchor="middle">小胃怪 (少)</text></svg>`,
-      'large_food': `<svg viewBox="0 0 100 100"><text x="50" y="55" font-size="28" text-anchor="middle">🍕🍕🍕</text><text x="50" y="90" font-size="10" text-anchor="middle">${label}</text></svg>`,
-      'small_food': `<svg viewBox="0 0 100 100"><text x="50" y="55" font-size="22" text-anchor="middle">🍕</text><text x="50" y="90" font-size="10" text-anchor="middle">${label}</text></svg>`,
+      'fat_monster': `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="40" ry="35" fill="#9F7AEA"/></svg>`,
+      'thin_monster': `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="20" ry="35" fill="#ED64A6"/></svg>`,
+      'large_food': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#F6AD55"/></svg>`,
+      'small_food': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="15" fill="#F6AD55"/></svg>`,
 
-      'big_mouth_monster': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#48BB78"/><text x="50" y="95" font-size="12" text-anchor="middle">大嘴怪 (厚)</text></svg>`,
-      'small_mouth_monster': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#ECC94B"/><text x="50" y="95" font-size="12" text-anchor="middle">小嘴怪 (薄)</text></svg>`,
-      'thick_book': `<svg viewBox="0 0 100 100"><rect x="30" y="20" width="40" height="60" rx="4" fill="#3182CE"/><text x="50" y="95" font-size="12" text-anchor="middle">厚書</text></svg>`,
-      'thin_book': `<svg viewBox="0 0 100 100"><rect x="42" y="20" width="16" height="60" rx="2" fill="#E53E3E"/><text x="50" y="95" font-size="12" text-anchor="middle">薄書</text></svg>`,
+      'big_mouth_monster': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#48BB78"/></svg>`,
+      'small_mouth_monster': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#ECC94B"/></svg>`,
+      'thick_book': `<svg viewBox="0 0 100 100"><rect x="30" y="20" width="40" height="60" rx="4" fill="#3182CE"/></svg>`,
+      'thin_book': `<svg viewBox="0 0 100 100"><rect x="42" y="20" width="16" height="60" rx="2" fill="#E53E3E"/></svg>`,
 
-      'house': `<svg viewBox="0 0 100 100"><polygon points="50,15 15,45 85,45" fill="#E53E3E"/><rect x="25" y="45" width="50" height="40" fill="#FEFCBF"/><text x="50" y="95" font-size="12" text-anchor="middle">家</text></svg>`,
-      'far_person': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#3182CE"/><text x="50" y="80" font-size="12" text-anchor="middle">遠的人</text></svg>`,
-      'near_person': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="28" fill="#3182CE"/><text x="50" y="95" font-size="12" text-anchor="middle">近的人</text></svg>`
+      'house': `<svg viewBox="0 0 100 100"><polygon points="50,15 15,45 85,45" fill="#E53E3E"/><rect x="25" y="45" width="50" height="40" fill="#FEFCBF"/></svg>`,
+      'far_person': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="10" fill="#3182CE"/></svg>`,
+      'near_person': `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="28" fill="#3182CE"/></svg>`
     };
 
     if (svgs[key]) return svgs[key];
-    return `<div style="font-weight:bold; color:#4A5568; text-align:center;">${label}<br><small>(${key})</small></div>`;
+    return `<div style="width:60px; height:60px; background:#E2E8F0; border-radius:12px;"></div>`;
   }
 
-  function createImageElement(fileSrc, fallbackKey, altLabel) {
+  function createImageElement(fileSrc, fallbackKey) {
     const img = document.createElement('img');
     img.src = fileSrc;
-    img.alt = altLabel;
+    img.alt = "";
     img.onerror = function() {
       const wrapper = document.createElement('div');
-      wrapper.innerHTML = getFallbackSVG(fallbackKey, altLabel);
+      wrapper.innerHTML = getFallbackSVG(fallbackKey);
       this.replaceWith(wrapper.firstElementChild);
     };
     return img;
@@ -478,27 +466,26 @@
 
       setupDragMatching({
         instruction: '幫凍同熱嘅人拖放合適嘅物品啦！',
-        targetA: { id: 'hot', label: '熱', imgSrc: `${hotCharIdx}.png`, key: 'hot_person', accepts: 'hot_item' },
-        targetB: { id: 'cold', label: '凍', imgSrc: `${coldCharIdx}.png`, key: 'cold_person', accepts: 'cold_item' },
+        targetA: { id: 'hot', imgSrc: `${hotCharIdx}.png`, key: 'hot_person', accepts: 'hot_item' },
+        targetB: { id: 'cold', imgSrc: `${coldCharIdx}.png`, key: 'cold_person', accepts: 'cold_item' },
         items: [
-          { id: 'hot_item', imgSrc: selectedHotItem.imgSrc, key: 'hot_item', label: selectedHotItem.label },
-          { id: 'cold_item', imgSrc: selectedColdItem.imgSrc, key: 'cold_item', label: selectedColdItem.label }
+          { id: 'hot_item', imgSrc: selectedHotItem.imgSrc, key: 'hot_item' },
+          { id: 'cold_item', imgSrc: selectedColdItem.imgSrc, key: 'cold_item' }
         ],
         isSwapped
       });
     } 
     else if (currentPair === '多少') {
-      // Pick 1 random large portion food (19.png-23.png) & 1 random small portion food (24.png-28.png)
       const selectedLargeFood = largeFoodPool[Math.floor(Math.random() * largeFoodPool.length)];
       const selectedSmallFood = smallFoodPool[Math.floor(Math.random() * smallFoodPool.length)];
 
       setupDragMatching({
         instruction: '把多嘅食物給大胃怪，少嘅食物給小胃怪！',
-        targetA: { id: 'fat', label: '多 (大胃怪)', imgSrc: '17.png', key: 'fat_monster', accepts: 'large_food' },
-        targetB: { id: 'thin', label: '少 (小胃怪)', imgSrc: '18.png', key: 'thin_monster', accepts: 'small_food' },
+        targetA: { id: 'fat', imgSrc: '17.png', key: 'fat_monster', accepts: 'large_food' },
+        targetB: { id: 'thin', imgSrc: '18.png', key: 'thin_monster', accepts: 'small_food' },
         items: [
-          { id: 'large_food', imgSrc: selectedLargeFood.imgSrc, key: 'large_food', label: selectedLargeFood.label },
-          { id: 'small_food', imgSrc: selectedSmallFood.imgSrc, key: 'small_food', label: selectedSmallFood.label }
+          { id: 'large_food', imgSrc: selectedLargeFood.imgSrc, key: 'large_food' },
+          { id: 'small_food', imgSrc: selectedSmallFood.imgSrc, key: 'small_food' }
         ],
         isSwapped
       });
@@ -506,11 +493,11 @@
     else if (currentPair === '厚薄') {
       setupDragMatching({
         instruction: '大嘴怪吃厚書，小嘴怪吃薄書！',
-        targetA: { id: 'big_mouth', label: '厚 (大嘴怪)', imgSrc: '29.png', key: 'big_mouth_monster', accepts: 'thick_book' },
-        targetB: { id: 'small_mouth', label: '薄 (小嘴怪)', imgSrc: '30.png', key: 'small_mouth_monster', accepts: 'thin_book' },
+        targetA: { id: 'big_mouth', imgSrc: '29.png', key: 'big_mouth_monster', accepts: 'thick_book' },
+        targetB: { id: 'small_mouth', imgSrc: '30.png', key: 'small_mouth_monster', accepts: 'thin_book' },
         items: [
-          { id: 'thick_book', imgSrc: '31.png', key: 'thick_book', label: '厚書' },
-          { id: 'thin_book', imgSrc: '32.png', key: 'thin_book', label: '薄書' }
+          { id: 'thick_book', imgSrc: '31.png', key: 'thick_book' },
+          { id: 'thin_book', imgSrc: '32.png', key: 'thin_book' }
         ],
         isSwapped
       });
@@ -518,12 +505,12 @@
     else if (currentPair === '長短') {
       const itemData = exemplarPool['長短'][Math.floor(Math.random() * exemplarPool['長短'].length)];
       setupDragMatching({
-        instruction: `將「長」同「短」嘅${itemData.name}放對位置！`,
-        targetA: { id: 'long', label: '長', imgSrc: itemData.longImg, key: itemData.longKey, accepts: 'long_item' },
-        targetB: { id: 'short', label: '短', imgSrc: itemData.shortImg, key: itemData.shortKey, accepts: 'short_item' },
+        instruction: `將「長」同「短」放對位置！`,
+        targetA: { id: 'long', imgSrc: itemData.targetLongImg, key: 'target_long', accepts: 'long_item' },
+        targetB: { id: 'short', imgSrc: itemData.targetShortImg, key: 'target_short', accepts: 'short_item' },
         items: [
-          { id: 'long_item', imgSrc: itemData.longImg, key: itemData.longKey, label: `長${itemData.name}` },
-          { id: 'short_item', imgSrc: itemData.shortImg, key: itemData.shortKey, label: `短${itemData.name}` }
+          { id: 'long_item', imgSrc: itemData.longImg, key: itemData.longKey },
+          { id: 'short_item', imgSrc: itemData.shortImg, key: itemData.shortKey }
         ],
         isSwapped
       });
@@ -531,12 +518,12 @@
     else if (currentPair === '高矮') {
       const itemData = exemplarPool['高矮'][Math.floor(Math.random() * exemplarPool['高矮'].length)];
       setupDragMatching({
-        instruction: `認一認，邊個係「高」，邊個係「矮」？`,
-        targetA: { id: 'tall', label: '高', imgSrc: itemData.tallImg, key: itemData.tallKey, accepts: 'tall_item' },
-        targetB: { id: 'short', label: '矮', imgSrc: itemData.shortImg, key: itemData.shortKey, accepts: 'short_item' },
+        instruction: `將「高」同「矮」放對位置！`,
+        targetA: { id: 'tall', imgSrc: itemData.targetTallImg, key: 'target_tall', accepts: 'tall_item' },
+        targetB: { id: 'short', imgSrc: itemData.targetShortImg, key: 'target_short', accepts: 'short_item' },
         items: [
-          { id: 'tall_item', imgSrc: itemData.tallImg, key: itemData.tallKey, label: '高' },
-          { id: 'short_item', imgSrc: itemData.shortImg, key: itemData.shortKey, label: '矮' }
+          { id: 'tall_item', imgSrc: itemData.tallImg, key: itemData.tallKey },
+          { id: 'short_item', imgSrc: itemData.shortImg, key: itemData.shortKey }
         ],
         isSwapped
       });
@@ -544,12 +531,12 @@
     else if (currentPair === '肥瘦') {
       const itemData = exemplarPool['肥瘦'][Math.floor(Math.random() * exemplarPool['肥瘦'].length)];
       setupDragMatching({
-        instruction: `邊個係「肥」，邊個係「瘦」？配對看看！`,
-        targetA: { id: 'fat', label: '肥', imgSrc: itemData.fatImg, key: itemData.fatKey, accepts: 'fat_item' },
-        targetB: { id: 'thin', label: '瘦', imgSrc: itemData.thinImg, key: itemData.thinKey, accepts: 'thin_item' },
+        instruction: `將「肥」同「瘦」放對位置！`,
+        targetA: { id: 'fat', imgSrc: itemData.targetFatImg, key: 'target_fat', accepts: 'fat_item' },
+        targetB: { id: 'thin', imgSrc: itemData.targetThinImg, key: 'target_thin', accepts: 'thin_item' },
         items: [
-          { id: 'fat_item', imgSrc: itemData.fatImg, key: itemData.fatKey, label: '肥' },
-          { id: 'thin_item', imgSrc: itemData.thinImg, key: itemData.thinKey, label: '瘦' }
+          { id: 'fat_item', imgSrc: itemData.fatImg, key: itemData.fatKey },
+          { id: 'thin_item', imgSrc: itemData.thinImg, key: itemData.thinKey }
         ],
         isSwapped
       });
@@ -579,14 +566,9 @@
 
       const imgWrapper = document.createElement('div');
       imgWrapper.className = 'target-img-container';
-      imgWrapper.appendChild(createImageElement(t.imgSrc, t.key, t.label));
-
-      const label = document.createElement('div');
-      label.className = 'target-label';
-      label.innerText = t.label;
+      imgWrapper.appendChild(createImageElement(t.imgSrc, t.key));
 
       box.appendChild(imgWrapper);
-      box.appendChild(label);
       targetsContainer.appendChild(box);
     });
 
@@ -595,7 +577,7 @@
       const dragEl = document.createElement('div');
       dragEl.className = 'draggable-item';
       dragEl.dataset.type = item.accepts || item.id;
-      dragEl.appendChild(createImageElement(item.imgSrc, item.key, item.label));
+      dragEl.appendChild(createImageElement(item.imgSrc, item.key));
       
       makeDraggable(dragEl);
       sourceArea.appendChild(dragEl);
@@ -700,15 +682,13 @@
     targetsContainer.innerHTML = `
       <div style="display:flex; justify-content:space-between; width:100%; height:100%; align-items:center; padding: 20px;">
         <div id="person-near" style="text-align:center;">
-          ${getFallbackSVG('near_person')}
-          <div style="font-weight:bold; color:#2B6CB0; font-size:1.3rem;">近 (Near)</div>
+          ${createImageElement('70.png', 'near_person').outerHTML}
         </div>
         <div id="house-target" style="text-align:center;">
-          ${getFallbackSVG('house')}
+          ${createImageElement('69.png', 'house').outerHTML}
         </div>
         <div id="person-far" style="text-align:center;">
-          ${getFallbackSVG('far_person')}
-          <div style="font-weight:bold; color:#E53E3E; font-size:1.3rem;">遠 (Far)</div>
+          ${createImageElement('71.png', 'far_person').outerHTML}
         </div>
       </div>
     `;
