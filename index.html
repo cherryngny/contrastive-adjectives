@@ -255,13 +255,13 @@
       background: #3182CE;
       color: white;
       border: none;
-      padding: 12px 35px;
-      font-size: 1.2rem;
+      padding: 14px 45px;
+      font-size: 1.3rem;
       border-radius: 30px;
       cursor: pointer;
       font-weight: bold;
-      box-shadow: 0 4px 12px rgba(49, 130, 206, 0.4);
-      z-index: 12;
+      box-shadow: 0 6px 15px rgba(49, 130, 206, 0.4);
+      z-index: 20;
       transition: transform 0.1s;
     }
     .draw-next-btn:active {
@@ -355,7 +355,6 @@
   let currentTrialCount = 0;
   const maxTrials = 5;
   let solvedCount = 0;
-  let hasDrawnLine = false;
 
   // 10 ITEMS FOR COLD/HOT (5 COLD: 7.png-11.png, 5 HOT: 12.png-16.png)
   const coldItemPool = [
@@ -389,6 +388,15 @@
     { imgSrc: '26.png', key: 'small_fruit' },
     { imgSrc: '27.png', key: 'small_sushi' },
     { imgSrc: '28.png', key: 'small_burger' }
+  ];
+
+  // 5 EXEMPLAR PAIRS FOR 厚薄 (31.png / 32.png, 72.png / 73.png, etc.)
+  const thickThinBookPool = [
+    { thickImg: '31.png', thinImg: '32.png', thickKey: 'thick_book', thinKey: 'thin_book' },
+    { thickImg: '72.png', thinImg: '73.png', thickKey: 'thick_book', thinKey: 'thin_book' },
+    { thickImg: '74.png', thinImg: '75.png', thickKey: 'thick_book', thinKey: 'thin_book' },
+    { thickImg: '76.png', thinImg: '77.png', thickKey: 'thick_book', thinKey: 'thin_book' },
+    { thickImg: '78.png', thinImg: '79.png', thickKey: 'thick_book', thinKey: 'thin_book' }
   ];
 
   // EXEMPLAR DATA POOL FOR 長短, 高矮, 肥瘦
@@ -523,13 +531,14 @@
       });
     } 
     else if (selectedTarget === '厚薄') {
+      const selectedBookPair = thickThinBookPool[Math.floor(Math.random() * thickThinBookPool.length)];
       setupDragMatching({
         instruction: '大嘴怪吃厚書，小嘴怪吃薄書！',
         targetA: { id: 'big_mouth', imgSrc: '29.png', key: 'big_mouth_monster', accepts: 'thick_book' },
         targetB: { id: 'small_mouth', imgSrc: '30.png', key: 'small_mouth_monster', accepts: 'thin_book' },
         items: [
-          { id: 'thick_book', imgSrc: '31.png', key: 'thick_book' },
-          { id: 'thin_book', imgSrc: '32.png', key: 'thin_book' }
+          { id: 'thick_book', imgSrc: selectedBookPair.thickImg, key: selectedBookPair.thickKey },
+          { id: 'thin_book', imgSrc: selectedBookPair.thinImg, key: selectedBookPair.thinKey }
         ],
         isSwapped
       });
@@ -705,9 +714,8 @@
     el.addEventListener('touchstart', onStart, { passive: false });
   }
 
-  // 遠近 ROUTE DRAWING (With manual "Next Trial" button)
+  // 遠近 ROUTE DRAWING
   function setupRouteDrawingTrial() {
-    hasDrawnLine = false;
     const instruction = '畫一條路線回家！體會「遠」同「近」！';
     document.getElementById('instruction-text').innerText = instruction;
 
@@ -732,9 +740,8 @@
       </div>
     `;
 
-    // Render "下一題" button in bottom area for 遠近
     const btnText = currentTrialCount >= maxTrials ? "完成" : "下一題 ➔";
-    sourceArea.innerHTML = `<button class="draw-next-btn" id="route-next-btn" onclick="triggerCompletion()">${btnText}</button>`;
+    sourceArea.innerHTML = `<button class="draw-next-btn" onclick="triggerCompletion()">${btnText}</button>`;
 
     initCanvas();
   }
@@ -749,7 +756,6 @@
 
     const startDraw = (e) => {
       drawing = true;
-      hasDrawnLine = true;
       ctx.beginPath();
       const rect = canvas.getBoundingClientRect();
       const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
@@ -769,21 +775,17 @@
       ctx.stroke();
     };
 
-    const endDraw = () => {
+    const stopDraw = () => {
       drawing = false;
     };
 
     canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', endEndDraw);
+    canvas.addEventListener('mouseup', stopDraw);
 
     canvas.addEventListener('touchstart', startDraw, { passive: false });
     canvas.addEventListener('touchmove', draw, { passive: false });
-    canvas.addEventListener('touchend', endDraw);
-
-    function endEndDraw() {
-      drawing = false;
-    }
+    canvas.addEventListener('touchend', stopDraw);
   }
 
   function clearCanvas() {
