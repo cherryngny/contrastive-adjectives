@@ -152,6 +152,7 @@
       display: flex;
       gap: 15px;
       align-items: center;
+      z-index: 10;
     }
     .trial-counter {
       background: #FF9F43;
@@ -209,6 +210,7 @@
       background: #EDF2F7;
       border-radius: 16px;
       padding: 10px;
+      z-index: 10;
     }
     .draggable-item {
       width: 95px;
@@ -246,6 +248,24 @@
       touch-action: none;
       pointer-events: none;
       display: none;
+    }
+
+    /* ROUTE DRAWING NEXT BUTTON */
+    .draw-next-btn {
+      background: #3182CE;
+      color: white;
+      border: none;
+      padding: 12px 35px;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(49, 130, 206, 0.4);
+      z-index: 12;
+      transition: transform 0.1s;
+    }
+    .draw-next-btn:active {
+      transform: scale(0.95);
     }
 
     /* MODAL POPUP */
@@ -335,6 +355,7 @@
   let currentTrialCount = 0;
   const maxTrials = 5;
   let solvedCount = 0;
+  let hasDrawnLine = false;
 
   // 10 ITEMS FOR COLD/HOT (5 COLD: 7.png-11.png, 5 HOT: 12.png-16.png)
   const coldItemPool = [
@@ -684,8 +705,9 @@
     el.addEventListener('touchstart', onStart, { passive: false });
   }
 
-  // 遠近 ROUTE DRAWING
+  // 遠近 ROUTE DRAWING (With manual "Next Trial" button)
   function setupRouteDrawingTrial() {
+    hasDrawnLine = false;
     const instruction = '畫一條路線回家！體會「遠」同「近」！';
     document.getElementById('instruction-text').innerText = instruction;
 
@@ -694,6 +716,8 @@
     canvas.style.pointerEvents = 'auto';
 
     const targetsContainer = document.getElementById('targets-container');
+    const sourceArea = document.getElementById('source-area');
+
     targetsContainer.innerHTML = `
       <div style="display:flex; justify-content:space-between; width:100%; height:100%; align-items:center; padding: 20px;">
         <div id="near-house" style="text-align:center;">
@@ -708,6 +732,10 @@
       </div>
     `;
 
+    // Render "下一題" button in bottom area for 遠近
+    const btnText = currentTrialCount >= maxTrials ? "完成" : "下一題 ➔";
+    sourceArea.innerHTML = `<button class="draw-next-btn" id="route-next-btn" onclick="triggerCompletion()">${btnText}</button>`;
+
     initCanvas();
   }
 
@@ -721,6 +749,7 @@
 
     const startDraw = (e) => {
       drawing = true;
+      hasDrawnLine = true;
       ctx.beginPath();
       const rect = canvas.getBoundingClientRect();
       const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
@@ -741,19 +770,20 @@
     };
 
     const endDraw = () => {
-      if (drawing) {
-        drawing = false;
-        setTimeout(triggerCompletion, 500);
-      }
+      drawing = false;
     };
 
     canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseup', endEndDraw);
 
     canvas.addEventListener('touchstart', startDraw, { passive: false });
     canvas.addEventListener('touchmove', draw, { passive: false });
     canvas.addEventListener('touchend', endDraw);
+
+    function endEndDraw() {
+      drawing = false;
+    }
   }
 
   function clearCanvas() {
